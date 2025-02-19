@@ -22,7 +22,7 @@ module.exports = {
         const perm2 = p2.fetch(`perm2_${message.guild.id}`);
         const perm3 = p3.fetch(`perm3_${message.guild.id}`);
 
-        if (owner.get(`owners.${message.author.id}`) || message.member.roles.cache.has(perm1) || message.member.roles.cache.has(perm2) || message.member.roles.cache.has(perm3) || config.bot.buyer.includes(message.author.id)   === true) {
+        if (owner.get(`owners.${message.author.id}`) || message.member.roles.cache.has(perm1) || message.member.roles.cache.has(perm2) || message.member.roles.cache.has(perm3) || config.bot.buyer.includes(message.author.id)) {
             let target = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
             if (!args[0]) return message.channel.send(`**Veuillez mentionner un utilisateur ou fournir son ID !**`);
@@ -32,7 +32,7 @@ module.exports = {
             if (args[1]) {
                 duration = parseDuration(args[1]);
                 if (isNaN(duration) || duration < 0 || duration > 28 * 24 * 60 * 60 * 1000) {
-                    return message.channel.send(`**Veuillez fournir une durée valide | en m/h/j | inférieur à 27j!**`);
+                    return message.channel.send(`**Veuillez fournir une durée valide | en s/m/h/j | inférieur à 27j!**`);
                 }
             } else {
                 duration = 28 * 24 * 60 * 60 * 1000; 
@@ -50,14 +50,19 @@ module.exports = {
                     .setDescription(`**Action**: Mute\n**Utilisateur**: ${target.user.tag} (${target.id})\n**Modérateur**: ${message.author.tag}\n**Durée**: ${ms(duration, { long: true })}\n**Raison**: ${reason}`)
                     .setTimestamp()
                     .setFooter(footer);
+
                 const logchannel = client.channels.cache.get(ml.get(`${message.guild.id}.modlog`));
                 if (logchannel) logchannel.send({ embeds: [embed] }).catch(() => false);
+
+                // **NOUVEAU** : Message dans le canal après le mute
+                message.channel.send(`🔇 **${target.user.tag}** a été mute pour **${ms(duration, { long: true })}**. 🕒 Raison : ${reason}`);
+                
             } catch (err) {
                 console.error(err);
-                message.channel.send(`**Une erreur s'est produite en essayant de rendre muet ${target}.**`);
+                message.channel.send(`❌ **Une erreur s'est produite en essayant de rendre muet ${target}.**`);
             }
         } else {
-            message.channel.send(`**Vous n'avez pas les permissions pour utiliser cette commande !**`);
+            message.channel.send(`❌ **Vous n'avez pas les permissions pour utiliser cette commande !**`);
         }
     }
 };
