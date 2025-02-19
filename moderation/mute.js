@@ -55,7 +55,7 @@ module.exports = {
                 if (logchannel) logchannel.send({ embeds: [embed] }).catch(() => false);
 
                 // **NOUVEAU** : Message dans le canal après le mute
-                message.channel.send(`**${target.user.tag}** a été mute pour **${ms(duration, { long: true })}**.`);
+                message.channel.send(`**${target.user.tag}** a été mute`);
                 
             } catch (err) {
                 console.error(err);
