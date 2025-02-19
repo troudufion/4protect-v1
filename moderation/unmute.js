@@ -12,8 +12,8 @@ const couleur = config.bot.couleur;
 
 module.exports = {
     name: 'unmute',
-    usage: 'unmute <membre>',
-    description: `Permet de ne plus rendre muet un utilisateur sur le serveur`,
+    usage: 'unmute [<membre>/all]',
+    description: `Permet de ne plus rendre muet un utilisateur ou tous les utilisateur`,
     async execute(client, message, args) {
         let pf = p.fetch(`prefix_${message.guild.id}`);
         if (pf == null) pf = config.bot.prefixe;
