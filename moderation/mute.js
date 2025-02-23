@@ -44,13 +44,13 @@ module.exports = {
                 }
             }
 
-            if (!target) return message.channel.send(`**Veuillez mentionner un utilisateur, fournir son ID ou répondre au message de l'utilisateur à mute !**`);
+            if (!target) return message.channel.send(`Veuillez mentionner un utilisateur, fournir son ID ou répondre au message de l'utilisateur à mute !`);
 
             let duration;
             if (args[1]) {
                 duration = parseDuration(args[1]);
                 if (isNaN(duration) || duration < 0 || duration > 28 * 24 * 60 * 60 * 1000) {
-                    return message.channel.send(`**Veuillez fournir une durée valide | en s/m/h/j | inférieur à 27j !**`);
+                    return message.channel.send(`Veuillez fournir une durée valide | en s/m/h/j | inférieur à 27j !`);
                 }
             } else {
                 duration = 28 * 24 * 60 * 60 * 1000; 
@@ -58,7 +58,7 @@ module.exports = {
 
             var reason = args.slice(2).join(" ") || 'Sans raison';
 
-            if (target.id === message.author.id) return message.channel.send(`**Vous ne pouvez pas vous rendre muet vous-même !**`);
+            if (target.id === message.author.id) return message.channel.send(`Vous ne pouvez pas vous rendre muet vous-même !`);
 
             try {
                 await target.timeout(duration, reason);
@@ -76,10 +76,10 @@ module.exports = {
                 
             } catch (err) {
                 console.error(err);
-                message.channel.send(`❌ **Une erreur s'est produite en essayant de rendre muet ${target}.**`);
+                message.channel.send(`Une erreur s'est produite en essayant de rendre muet ${target}.`);
             }
         } else {
-            message.channel.send(`❌ **Vous n'avez pas les permissions pour utiliser cette commande !**`);
+            message.channel.send(`Vous n'avez pas les permissions pour utiliser cette commande !`);
         }
     }
 };
