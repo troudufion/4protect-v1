@@ -23,16 +23,34 @@ module.exports = {
         const perm3 = p3.fetch(`perm3_${message.guild.id}`);
 
         if (owner.get(`owners.${message.author.id}`) || message.member.roles.cache.has(perm1) || message.member.roles.cache.has(perm2) || message.member.roles.cache.has(perm3) || config.bot.buyer.includes(message.author.id)) {
-            let target = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
-            if (!args[0]) return message.channel.send(`**Veuillez mentionner un utilisateur ou fournir son ID !**`);
-            if (!target) return message.channel.send(`**Veuillez mentionner un utilisateur valide ou fournir un ID valide !**`);
+            let target = null;
+
+            // On vérifie d'abord si un membre est mentionné
+            if (message.mentions.members.first()) {
+                target = message.mentions.members.first();
+            } 
+            // Sinon, on vérifie si un ID est fourni en argument
+            else if (args[0]) {
+                target = message.guild.members.cache.get(args[0]);
+            } 
+            // Sinon, on vérifie si le message est une réponse à un autre message
+            else if (message.reference) {
+                try {
+                    const repliedMessage = await message.channel.messages.fetch(message.reference.messageId);
+                    target = repliedMessage.member;
+                } catch (err) {
+                    console.error("Erreur lors de la récupération du message auquel on répond :", err);
+                }
+            }
+
+            if (!target) return message.channel.send(`**Veuillez mentionner un utilisateur, fournir son ID ou répondre au message de l'utilisateur à mute !**`);
 
             let duration;
             if (args[1]) {
                 duration = parseDuration(args[1]);
                 if (isNaN(duration) || duration < 0 || duration > 28 * 24 * 60 * 60 * 1000) {
-                    return message.channel.send(`**Veuillez fournir une durée valide | en s/m/h/j | inférieur à 27j!**`);
+                    return message.channel.send(`**Veuillez fournir une durée valide | en s/m/h/j | inférieur à 27j !**`);
                 }
             } else {
                 duration = 28 * 24 * 60 * 60 * 1000; 
@@ -54,7 +72,6 @@ module.exports = {
                 const logchannel = client.channels.cache.get(ml.get(`${message.guild.id}.modlog`));
                 if (logchannel) logchannel.send({ embeds: [embed] }).catch(() => false);
 
-                // **NOUVEAU** : Message dans le canal après le mute
                 message.channel.send(`**${target.user.tag}** a été mute`);
                 
             } catch (err) {
