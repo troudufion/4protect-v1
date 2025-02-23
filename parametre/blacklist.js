@@ -22,17 +22,17 @@ module.exports = {
             // Commande pour vider la blacklist
             if (args[0] === 'clear') {
                 db.delete(`${config.bot.blacklist}.blacklist`);
-                return message.channel.send(`✅ La liste noire a été effacée.`);
+                return message.channel.send(` La liste noire a été effacée.`);
             }
 
             // Commande pour ajouter un membre à la blacklist
             if (args[0]) {
                 const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
-                if (!member) return message.channel.send(`❌ Aucun membre trouvé pour \`${args[0] || "rien"}\``);
+                if (!member) return message.channel.send(` Aucun membre trouvé pour \`${args[0] || "rien"}\``);
 
                 if (db.get(`${config.bot.blacklist}.${member.id}`) === member.id) { 
-                    return message.channel.send(`⚠️ **${member.user.username}** est déjà blacklisté.`); 
+                    return message.channel.send(` ${member.user.username} est déjà blacklisté.`); 
                 }
 
                 db.push(`${config.bot.blacklist}.blacklist`, member.id);
@@ -43,17 +43,17 @@ module.exports = {
                     await member.kick(`Blacklisté par ${message.author.username}`);
                 } catch (err) {
                     console.error(err);
-                    message.channel.send(`⚠️ Impossible d'expulser **${member.user.username}**.`);
+                    message.channel.send(` Impossible d'expulser **${member.user.username}**.`);
                 }
 
-                return message.channel.send(`🔒 <@${member.id}> a été ajouté à la blacklist.`);
+                return message.channel.send(` <@${member.id}> a été ajouté à la blacklist.`);
             } 
             // Affichage de la liste des utilisateurs blacklistés
             else {
                 let blacklistedUsers = db.get(`${config.bot.blacklist}.blacklist`);
                 
                 let embed = new Discord.MessageEmbed()
-                    .setTitle("🔒 Liste des utilisateurs blacklistés")
+                    .setTitle(" Liste des utilisateurs blacklistés")
                     .setColor(color)
                     .setDescription(!blacklistedUsers ? "Aucun utilisateur blacklisté." : blacklistedUsers.map(user => `<@${user}>`).join("\n"))
                     .setFooter({ text: `${footer}` });
@@ -61,7 +61,7 @@ module.exports = {
                 return message.channel.send({ embeds: [embed] });
             }
         } else {
-            return message.channel.send(`❌ **Vous n'avez pas la permission d'utiliser cette commande !**`);
+            return message.channel.send(`Vous n'avez pas la permission d'utiliser cette commande !`);
         }
     }
 };
