@@ -42,9 +42,9 @@ module.exports = {
                 const modlog = new Discord.MessageEmbed()
                     .setColor(color)
                     .setTitle(`${message.author.tag} a effectué un derank`)
-                    .setDescription(`⚠️ <@${member.id}> a été derank\nExécuteur : <@${message.author.id}>`)
+                    .setDescription(`⚠ <@${member.id}> a été derank\nExécuteur : <@${message.author.id}>`)
                     .setTimestamp()
-                    .setFooter({ text: `⚠️ ${footer}` });
+                    .setFooter({ text: `⚠ ${footer}` });
 
                 const logchannel = client.channels.cache.get(channellogs);
                 if (logchannel) logchannel.send({ content: `${roleping}`, embeds: [alert] }).catch(() => false);
