@@ -27,7 +27,7 @@ module.exports = {
                 }
 
                 db.delete(`${config.bot.blacklist}.blacklist`);
-                message.channel.send(`✅ **Tous les utilisateurs** ont été retirés de la blacklist.`);
+                message.channel.send(` Tous les utilisateurs** ont été retirés de la blacklist.`);
                 return;
             }
 
@@ -39,24 +39,24 @@ module.exports = {
                     try {
                         member = await client.users.fetch(args[0]);
                     } catch (e) {
-                        return message.channel.send(`❌ Aucun utilisateur trouvé pour \`${args[0] || "rien"}\``);
+                        return message.channel.send(` Aucun utilisateur trouvé pour \`${args[0] || "rien"}\``);
                     }
                 }
 
                 if (!db.get(`${config.bot.blacklist}.${member.id}`)) { 
-                    return message.channel.send(`⚠️ **${member.username}** n'est pas dans la liste noire.`);
+                    return message.channel.send(` **${member.username}** n'est pas dans la liste noire.`);
                 }
 
                 // Supprimer l'utilisateur de la blacklist
                 db.set(`${config.bot.blacklist}.blacklist`, db.get(`${config.bot.blacklist}.blacklist`).filter(s => s !== member.id));
                 db.delete(`${config.bot.blacklist}.${member.id}`);
 
-                message.channel.send(`✅ **__${member.username}__** a été retiré de la blacklist.`);
+                message.channel.send(` **__${member.username}__** a été retiré de la blacklist.`);
             } else {
-                return message.channel.send(`❌ **Usage incorrect**. Veuillez mentionner un utilisateur ou utiliser \`unbl all\` pour tout supprimer.`);
+                return message.channel.send(` **Usage incorrect**. Veuillez mentionner un utilisateur ou utiliser \`unbl all\` pour tout supprimer.`);
             }
         } else {
-            return message.channel.send(`❌ **Vous n'avez pas la permission d'utiliser cette commande !**`);
+            return message.channel.send(`Vous n'avez pas la permission d'utiliser cette commande !`);
         }
     }
 };
