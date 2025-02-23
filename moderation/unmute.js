@@ -23,9 +23,17 @@ module.exports = {
         const perm3 = p3.fetch(`perm3_${message.guild.id}`);
         const modlogChannel = ml.get(`${message.guild.id}.modlog`);
 
-        if (owner.get(`owners.${message.author.id}`) || message.member.roles.cache.has(perm1) || message.member.roles.cache.has(perm2) || message.member.roles.cache.has(perm3) || config.bot.buyer.includes(message.author.id) === true) {
-            if (!args[0]) return message.channel.send(`Veuillez mentionner un utilisateur, fournir son ID ou utiliser "all" pour unmute tout le monde !`);
+        if (owner.get(`owners.${message.author.id}`) || 
+            message.member.roles.cache.has(perm1) || 
+            message.member.roles.cache.has(perm2) || 
+            message.member.roles.cache.has(perm3) || 
+            config.bot.buyer.includes(message.author.id) === true) {
 
+            if (!args[0]) {
+                return message.channel.send(`Veuillez mentionner un utilisateur, fournir son ID ou utiliser "all" pour unmute tout le monde !`);
+            }
+
+            // Si "all" est spécifié, on unmute tous les membres muets
             if (args[0].toLowerCase() === "all") {
                 let members = message.guild.members.cache.filter(member => member.isCommunicationDisabled());
                 if (members.size === 0) return message.channel.send(`Aucun membre n'est actuellement mute.`);
@@ -53,8 +61,9 @@ module.exports = {
                 return message.channel.send(`Tous les membres muets ont été unmute avec succès !`);
             }
             
-            // Recherche du membre par mention, ID ou en répondant au message
+            // Recherche du membre par mention ou ID
             let target = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+            // Si non trouvé, vérification si le message est une réponse
             if (!target && message.reference) {
                 try {
                     const repliedMessage = await message.channel.messages.fetch(message.reference.messageId);
@@ -64,4 +73,34 @@ module.exports = {
                 }
             }
             
-            if (!target) return message.channel.send(`Veuillez mentionner un utilisateur valide, fournir un ID valide ou répondre au message de l'utilisateur !`)
+            if (!target) {
+                return message.channel.send(`Veuillez mentionner un utilisateur valide, fournir un ID valide ou répondre au message de l'utilisateur !`);
+            }
+            
+            var reason = args.slice(1).join(" ") || 'Aucune raison';
+            
+            try {
+                await target.timeout(null, reason);
+                
+                const embed = new Discord.MessageEmbed()
+                    .setColor(couleur)
+                    .setTitle('Unmute')
+                    .setDescription(`${target} a été unmute par ${message.author}.\nRaison : ${reason}`)
+                    .setTimestamp()
+                    .setFooter(footer);
+                
+                if (modlogChannel) {
+                    const modlog = client.channels.cache.get(modlogChannel);
+                    modlog.send({ embeds: [embed] }).catch(() => false);
+                }
+                
+                return message.channel.send(`${target} a été unmute avec succès !`);
+            } catch (err) {
+                console.error(err);
+                return message.channel.send(`Une erreur s'est produite en essayant de lever le mute de ${target}.`);
+            }
+        } else {
+            return message.channel.send(`Vous n'avez pas les permissions pour utiliser cette commande !`);
+        }
+    }
+};
