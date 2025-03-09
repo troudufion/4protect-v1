@@ -1,7 +1,7 @@
 @bot.event
 async def on_member_join(member):
     # Remplace "NomDuRôle" par le nom exact du rôle que tu veux attribuer
-    role = discord.utils.get(member.guild.roles, name="NomDuRôle")
+    role = discord.utils.get(member.guild.roles, name="W9")
     
     if role:
         await member.add_roles(role)
